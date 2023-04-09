@@ -1,0 +1,55 @@
+dependencies:
+  build:
+    - python3
+    - py3-pip
+  runtime:
+    - bash
+    - curl
+    - jq
+    - s6
+    - python3
+    - py3-pip
+    - monty-openrc
+    - ca-certificates
+
+stack: alpine/3.17
+
+build:
+  destinations: 
+    - '*'
+    - .venv
+  command: |
+    pip install pipenv
+
+    pipenv install
+
+run: 
+  name: monty
+  commands: 
+  - name: migrate
+    binary: python
+    call: 'manage.py migrate'
+  services:
+  - name: web
+    binary: gunicorn
+    start: 
+      call: 'monty.wsgi -p server.pid'
+    stop:
+      kill: true
+      pid_path: server.pid
+
+hook:
+  post-install: |
+    rc-update add monty
+    rc-service monty migrate
+
+  pre-upgrade: |
+    rc-service monty stop
+
+  post-upgrade: |
+    rc-service monty migrate
+    rc-service monty start
+
+  post-deinstall: |
+    rc-service monty stop
+    rc-update monty rdio
