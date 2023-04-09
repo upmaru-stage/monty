@@ -21,6 +21,8 @@ build:
   command: |
     pip install pipenv
 
+    export PATH=$PATH:$HOME/.local/bin
+
     pipenv install
 
 run: 
