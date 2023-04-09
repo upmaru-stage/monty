@@ -16,7 +16,7 @@ stack: alpine/3.17
 
 build:
   destinations: 
-    - bin
+    - dist/bin
   command: |
     export PATH=$PATH:$HOME/.local/bin
 
@@ -24,7 +24,7 @@ build:
     pip install -r requirements.txt --target dist/
     cp -r monty polls manage.py dist/
 
-    shiv --site-packages dist --compressed -p '/usr/bin/env python3' -o bin/monty -e monty.main:run
+    shiv --site-packages dist --compressed -p '/usr/bin/env python3' -o dist/bin/monty -e monty.main:run
 
 run: 
   name: monty
