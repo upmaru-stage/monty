@@ -16,35 +16,33 @@ stack: alpine/3.17
 
 build:
   destinations: 
-    - '*'
-    - .venv
+    - bin
   command: |
-    mkdir .venv
+    export PATH=$PATH:$HOME/.local/bin
 
+    pip install shiv
+    pip install -r requirements.txt --target dist/
+    cp -r monty polls manage.py dist/
+
+    shiv --site-packages dist --compressed -p '/usr/bin/env python3' -o bin/monty -e monty.main:run
 
 run: 
   name: monty
   commands: 
   - name: migrate
-    binary: python
-    call: 'manage.py migrate'
+    binary: monty
+    call: 'migrate'
   services:
   - name: web
-    binary: gunicorn
+    binary: monty
     start: 
-      call: 'monty.wsgi -p server.pid'
+      call: web
     stop:
       kill: true
       pid_path: server.pid
 
 hook:
   post-install: |
-    cd /var/lib/monty
-
-    pip install pipenv
-
-    pipenv install
-
     rc-update add monty
     rc-service monty migrate
 
@@ -52,10 +50,6 @@ hook:
     rc-service monty stop
 
   post-upgrade: |
-    cd /var/lib/monty
-
-    pipenv install
-    
     rc-service monty migrate
     rc-service monty start
 
