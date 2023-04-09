@@ -19,16 +19,8 @@ build:
     - '*'
     - .venv
   command: |
-    export PATH=$PATH:$HOME/.local/bin
-    export LANG="en_US.UTF-8"
-    export LC_ALL="en_US.UTF-8"
-    export LC_CTYPE="en_US.UTF-8"
-
-    pip install pipenv
-
     mkdir .venv
 
-    pipenv install
 
 run: 
   name: monty
@@ -47,6 +39,12 @@ run:
 
 hook:
   post-install: |
+    cd /var/lib/monty
+
+    pip install pipenv
+
+    pipenv install
+
     rc-update add monty
     rc-service monty migrate
 
