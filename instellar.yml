@@ -52,6 +52,10 @@ hook:
     rc-service monty stop
 
   post-upgrade: |
+    cd /var/lib/monty
+
+    pipenv install
+    
     rc-service monty migrate
     rc-service monty start
 
