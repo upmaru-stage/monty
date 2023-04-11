@@ -32,8 +32,7 @@ jobs:
       - name: 'Archive'
         uses: upmaru/pakman@develop
         with:
-          entrypoint: "/usr/bin/zip"
-          args: -r packages.zip /github/home/packages
+          entrypoint: /var/lib/pakman/bin/archive.sh
 
       - name: 'Create Deployment'
         uses: upmaru/pakman@develop
