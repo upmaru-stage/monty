@@ -30,9 +30,10 @@ jobs:
           entrypoint: /var/lib/pakman/bin/build.sh
 
       - name: 'Archive'
-        uses: juankaram/archive-action@v1.0.0
+        uses: upmaru/pakman@develop
         with:
-          args: zip -r packages.zip /github/home/packages
+          command: zip
+          args: '-r packages.zip /github/home/packages'
 
       - name: 'Create Deployment'
         uses: upmaru/pakman@develop
