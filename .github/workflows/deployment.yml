@@ -19,8 +19,8 @@ jobs:
       - name: 'Pakman'
         uses: upmaru/pakman@develop
         with:
-          stack: '3.17'
           command: 'bootstrap'
+          alpine-version: '3.17'
         env:
           ABUILD_PRIVATE_KEY: ${{secrets.ABUILD_PRIVATE_KEY}}
           ABUILD_PUBLIC_KEY: ${{secrets.ABUILD_PUBLIC_KEY}}
@@ -28,19 +28,19 @@ jobs:
       - name: 'Build APK'
         uses: upmaru/pakman@develop
         with:
-          stack: '3.17'
+          alpine-version: '3.17'
           entrypoint: /var/lib/pakman/bin/build.sh
 
       - name: 'Archive'
         uses: upmaru/pakman@develop
         with:
-          stack: '3.17'
+          alpine-version: '3.17'
           entrypoint: /var/lib/pakman/bin/archive.sh
 
       - name: 'Create Deployment'
         uses: upmaru/pakman@develop
         with:
-          stack: '3.17'
+          alpine-version: '3.17'
           command: 'create_deployment'
           archive: 'packages.zip'
         env:
