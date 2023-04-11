@@ -32,7 +32,8 @@ jobs:
       - name: 'Archive'
         uses: upmaru/pakman@develop
         with:
-          command: 'create_archive'
+          entrypoint: /bin/sh
+          command: zip -r packages.zip /github/home/packages
 
       - name: 'Create Deployment'
         uses: upmaru/pakman@develop
