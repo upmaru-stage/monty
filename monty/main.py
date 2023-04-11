@@ -6,23 +6,22 @@ import django
 import gunicorn.app.wsgiapp as wsgi
 from django.core import management
 
+
 def run():
     # setup django
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "monty.settings.development")
     django.setup()
 
-    try:
-        production = sys.argv[1] == "production"
-    except IndexError:
-        production = False
+    match sys.argv[1]:
+        case "web":
+            # This is just a simple way to supply args to gunicorn
+            sys.argv = [".", "monty.wsgi", "--bind=0.0.0.0:8000"]
 
-    if production:
-        # This is just a simple way to supply args to gunicorn
-        sys.argv = [".", "monty.wsgi", "--bind=0.0.0.0:8000"]
-
-        wsgi.run()
-    else:
-        management.call_command("migrate")
+            wsgi.run()
+        case "migrate":
+            management.call_command("migrate")
+        case _:
+            sys.stdout.write("please pass in a valid command [web, migrate]")
 
 
 if __name__ == "__main__":
