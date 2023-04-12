@@ -8,6 +8,7 @@ django = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary", "pool"], version = "*"}
 dj-database-url = "*"
+tzdata = "*"
 
 [dev-packages]
 
