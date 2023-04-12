@@ -1,5 +1,6 @@
 from monty.settings.common import *
 
+import dj_database_url
 import os
 
 from django.core.exceptions import ImproperlyConfigured
@@ -27,4 +28,8 @@ ALLOWED_HOSTS = ["monty.artello.network"]
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {"default": get_env_value("DATABASE_URL")}
+MAX_CONN_AGE = 600
+
+DATABASES = {
+    "default": dj_database_url.config(conn_max_age=MAX_CONN_AGE)
+}
