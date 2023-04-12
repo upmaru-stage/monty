@@ -1,4 +1,5 @@
 dependencies:
+  trace: true
   build:
     - python3
     - py3-pip
@@ -10,6 +11,7 @@ dependencies:
     - python3
     - py3-pip
     - monty-openrc
+    - libpq
     - ca-certificates
 
 stack: alpine/3.17
