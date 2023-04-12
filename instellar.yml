@@ -39,7 +39,7 @@ run:
       call: web
     stop:
       kill: true
-      pid_path: server.pid
+      pid_path: tmp/server.pid
 
 hook:
   post-install: |
