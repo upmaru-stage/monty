@@ -57,4 +57,4 @@ hook:
 
   post-deinstall: |
     rc-service monty stop
-    rc-update monty rdio
+    rc-update del monty
