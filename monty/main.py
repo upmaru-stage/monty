@@ -15,7 +15,7 @@ def run():
     match sys.argv[1]:
         case "web":
             # This is just a simple way to supply args to gunicorn
-            sys.argv = [".", "monty.wsgi", "--bind=0.0.0.0:8000", "-p server.pid"]
+            sys.argv = [".", "monty.wsgi", "--bind=0.0.0.0:8000"]
 
             wsgi.run()
         case "migrate":
