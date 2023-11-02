@@ -14,7 +14,7 @@ dependencies:
     - libpq
     - ca-certificates
 
-stack: alpine/3.17
+stack: alpine/3.18
 
 build:
   destinations: 
@@ -55,3 +55,22 @@ hook:
   post-deinstall: |
     rc-service monty stop
     rc-update del monty
+
+kits:
+  - description: Web service configuration
+    main: true
+    name: web
+    ports:
+      - main: true
+        name: web
+        target: 8000
+    variables:
+      - key: DJANGO_SETTINGS_MODULE
+        default_value: monty.settings.production
+      - key: DATABASE_URL
+        driver: database/postgresql
+      - driver: generic/secret
+        driver_options:
+          length: 50
+        key: SECRET_KEY_BASE
+
