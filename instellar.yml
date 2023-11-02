@@ -1,5 +1,4 @@
 dependencies:
-  trace: true
   build:
     - python3
     - py3-pip
@@ -10,54 +9,56 @@ dependencies:
     - s6
     - python3
     - py3-pip
-    - monty-openrc
     - libpq
     - ca-certificates
+    - monty-openrc
+  trace: true
 
 stack: alpine/3.18
 
 build:
-  destinations: 
-    - dist/bin
   command: |
     export PATH=$PATH:$HOME/.local/bin
-
+    
     pip install shiv
     pip install -r requirements.txt --target dist/
     cp -r monty polls manage.py dist/
-
+    
     shiv --site-packages dist --compressed -p '/usr/bin/env python3' -o dist/bin/monty -e monty.main:run
+  destinations:
+    - dist/bin
 
-run: 
+run:
+  commands:
+    - binary: monty
+      call: migrate
+      name: migrate
+    - binary: tail
+      call: -f -n 200 /var/log/monty/current
+      name: logs
+      path: /usr/bin
   name: monty
-  commands: 
-  - name: migrate
-    binary: monty
-    call: 'migrate'
   services:
-  - name: web
-    binary: monty
-    start: 
-      call: web
+    - binary: monty
+      name: web
+      start:
+        call: web
 
 hook:
-  post-install: |
-    rc-update add monty
-    rc-service monty migrate
-
-  pre-upgrade: |
-    rc-service monty stop
-
-  post-upgrade: |
-    rc-service monty migrate
-    rc-service monty start
-
   post-deinstall: |
     rc-service monty stop
     rc-update del monty
+  post-install: |
+    rc-update add monty
+    rc-service monty migrate
+  post-upgrade: |
+    rc-service monty migrate
+    rc-service monty start
+  pre-upgrade: |
+    rc-service monty stop
 
 kits:
-  - description: Web service configuration
+  - description: web service
     main: true
     name: web
     ports:
@@ -65,12 +66,11 @@ kits:
         name: web
         target: 8000
     variables:
-      - key: DJANGO_SETTINGS_MODULE
-        default_value: monty.settings.production
-      - key: DATABASE_URL
-        driver: database/postgresql
+      - default_value: monty.settings.production
+        key: DJANGO_SETTINGS_MODULE
+      - driver: database/postgresql
+        key: DATABASE_URL
       - driver: generic/secret
         driver_options:
           length: 50
-        key: SECRET_KEY_BASE
-
+        key: SECRET_KEY
